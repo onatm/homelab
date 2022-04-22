@@ -43,7 +43,7 @@ resource "proxmox_vm_qemu" "master" {
 
 resource "proxmox_vm_qemu" "nodes" {
   count       = 3
-  name        = "node-${count.index}.k8s.cluster"
+  name        = "node-${count.index}.k3s.cluster"
   target_node = var.target_node
 
   clone = "ubuntu-2204-cloudinit-template"
