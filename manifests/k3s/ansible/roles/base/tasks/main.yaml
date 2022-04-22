@@ -1,0 +1,39 @@
+- name: install common packages
+  apt:
+    pkg:
+      - apt-transport-https
+      - curl
+    update_cache: yes
+
+- name: disable swap
+  command: swapoff -a
+
+- name: disable swap in fstab
+  replace:
+    path: /etc/fstab
+    regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+    replace: '# \1'
+
+- name: enable br_netfilter
+  command: modprobe br_netfilter
+
+- name: ensure iptables enabled
+  template:
+    src: k3s.iptables.conf
+    dest: /etc/sysctl.d/k3s.iptables.conf
+
+- name: enable port forward
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+    sysctl_set: yes
+    reload: yes
+
+- name: add /usr/local/bin to sudo secure_path
+  lineinfile:
+    line: "Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin"
+    regexp: "Defaults(\\s)*secure_path(\\s)*="
+    state: present
+    insertafter: EOF
+    path: /etc/sudoers
+    validate: "visudo -cf %s"

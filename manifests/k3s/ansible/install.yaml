@@ -1,0 +1,17 @@
+---
+- hosts: cluster
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: base
+    - role: download
+
+- hosts: master
+  become: yes
+  roles:
+    - role: cluster/master
+
+- hosts: node
+  become: yes
+  roles:
+    - role: cluster/node
