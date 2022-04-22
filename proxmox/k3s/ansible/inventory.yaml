@@ -1,6 +1,0 @@
-all:
-  children:
-    pve:
-      hosts:
-        proxmox-master:
-          ansible_host: pve.local
